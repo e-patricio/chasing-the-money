@@ -119,69 +119,48 @@ total = 0
 while char != '#':
     match sentido:
         case 0: # Direita
-            i = co+1
-            while i <= quantCol:
-                print("Indo para a direita: " + str(mapa[lin][i]))
-                if mapa[lin][i] == '/' or mapa[lin][i] == '\\':
-                    sentido = direc(mapa[lin][i], sentido)
-                    co = i
-                    break
-                elif mapa[lin][i] == '#':
-                    char = '#'
-                    break
-                elif mapa[lin][i].isdigit():
-                    resultado = montante(sentido,lin,i,mapa)
-                    result = resultado[0]
-                    total = total + int(result)
-                    i = i + resultado[1]
-                i = i + 1
+            co = co + 1
+            ##print("Indo para a direita: " + str(mapa[lin][co]))
+            if mapa[lin][co] == '/' or mapa[lin][co] == '\\':
+                sentido = direc(mapa[lin][co], sentido)
+            elif mapa[lin][co] == '#':
+                char = '#'
+            elif mapa[lin][co].isdigit():
+                resultado = montante(sentido,lin,co,mapa)
+                result = resultado[0]
+                total = total + int(result)
+                co = co + resultado[1]
         case 1: # Baixo
-            i = lin+1
-            while i <= quantLinha:
-                print("Indo para baixo: " + str(mapa[i][co]))
-                if mapa[i][co] == '/' or mapa[i][co] == '\\':
-                    sentido = direc(mapa[i][co], sentido)
-                    lin = i
-                    break
-                elif mapa[i][co] == '#':
-                    char = '#'
-                    break
-                elif mapa[i][co].isdigit():
-                    resultado = montante(sentido,i,co,mapa)
-                    total = total + int(resultado[0])
-                    i = i + resultado[1]
-                i = i + 1
+            lin = lin + 1
+            ##print("Indo para baixo: " + str(mapa[lin][co]))
+            if mapa[lin][co] == '/' or mapa[lin][co] == '\\':
+                sentido = direc(mapa[lin][co], sentido)
+            elif mapa[lin][co] == '#':
+                char = '#'
+            elif mapa[lin][co].isdigit():
+                resultado = montante(sentido,lin,co,mapa)
+                total = total + int(resultado[0])
+                lin = lin + resultado[1]
         case 2: # Esquerda
-            i = co-1
-            while i >= 0 :
-                print("Indo para a esquerda: " + str(mapa[lin][i]))
-                if mapa[lin][i] == '/' or mapa[lin][i] == '\\':
-                    sentido = direc(mapa[lin][i],sentido)
-                    co = i
-                    break
-                elif mapa[lin][i] == '#':
-                    char = '#'
-                    break
-                elif mapa[lin][i].isdigit():
-                    resultado = montante(sentido,lin,i,mapa)
-                    total = total + int(resultado[0])                    
-                    i = i - resultado[1]
-                i= i - 1
+            co = co-1
+            ##print("Indo para a esquerda: " + str(mapa[lin][co]))
+            if mapa[lin][co] == '/' or mapa[lin][co] == '\\':
+                sentido = direc(mapa[lin][co],sentido)
+            elif mapa[lin][co] == '#':
+                char = '#'
+            elif mapa[lin][co].isdigit():
+                resultado = montante(sentido,lin,co,mapa)
+                total = total + int(resultado[0])                    
+                co = co - resultado[1]
         case 3: # Cima
-            i = lin - 1
-            while i > 0:
-                print("Indo para cima: " + str(mapa[i][co]))
-                if mapa[i][co] == '/' or mapa[i][co] == '\\':
-                    sentido = direc(mapa[i][co],sentido)
-                    lin = i
-                    break
-                elif mapa[i][co] == '#':
-                    char = '#'
-                    break
-                elif mapa[i][co].isdigit():
-                    resultado = montante(sentido,i,co,mapa)
-                    total = total + int(resultado[0])
-                    i = i - resultado[1]
-                    print(resultado[1])
-                i = i - 1
+            lin = lin - 1
+            ##print("Indo para cima: " + str(mapa[lin][co]))
+            if mapa[lin][co] == '/' or mapa[lin][co] == '\\':
+                sentido = direc(mapa[lin][co],sentido)
+            elif mapa[lin][co] == '#':
+                char = '#'
+            elif mapa[lin][co].isdigit():
+                resultado = montante(sentido,lin,co,mapa)
+                total = total + int(resultado[0])
+                lin = lin - resultado[1]
 print("Montante final: " + str(total))
