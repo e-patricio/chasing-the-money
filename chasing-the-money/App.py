@@ -35,7 +35,7 @@ def direc(char, sentido):
 def montante(sentido, l, c, mapa):
     digit = mapa[l][c]
     number = ''
-    leap = -1
+    leap = -1 ## -1 pq do jeito q o resto tá, ele conta 1 para o local onde ele já tá
     match sentido:
         case 0:
             while digit.isdigit() == True:
