@@ -1,5 +1,5 @@
 import os
-
+from time import process_time
 # Caminho para a pasta dos arquivos
 pasta_mapas = "mapas"
 
@@ -88,7 +88,6 @@ def menu():
     print("Siga o dinheiro! (>_<)")
     print("========================================")
     print("       > Casos disponíveis: <3")
-    print("    0. Caso 0")
     print("    1. Caso G50    |   5. Caso G750")
     print("    2. Caso G100   |   6. Caso G1000")
     print("    3. Caso G200   |   7. Caso G1500")
@@ -106,6 +105,7 @@ def menu():
     return mapa
 
 # Inicia o programa
+start = process_time()
 mapa = menu()
 stringMapa= "".join(str(element) for element in mapa[0])
 tams = stringMapa.split(" ")
@@ -164,3 +164,6 @@ while char != '#':
                 total = total + int(resultado[0])
                 lin = lin - resultado[1]
 print("Montante final: " + str(total))
+end = process_time()
+t = end-start
+print(str(t)+"s")
