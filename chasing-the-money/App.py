@@ -10,18 +10,71 @@ def leitor(nome_arquivo):
 
     with open(caminho_arquivo, 'r') as arquivo:
         for linha in arquivo:
-            # Remover caracteres de quebra de linha e espaços em branco
-            linha = linha.strip()
             # Adicionar a linha como uma lista de caracteres a matriz
             matriz.append(list(linha))
+    return matriz
+        
+## Função que muda o sentido de leitura        
+def direc(char, sentido):
+    if char == '/':
+        if sentido == 0:
+            return 3
+        elif sentido == 1:
+            return 2
+        elif sentido == 2:
+            return 1
+        else:
+            0
+    else:
+        if sentido == 0 or sentido ==2:
+            return sentido + 1
+        else:
+            return sentido - 1
 
-    # Imprimir a matriz
-    for linha in matriz:
-        print("".join(linha))
+## Função que junta os dígitos no caminho e monta o número     
+def montante(sentido, l, c, mapa):
+    digit = mapa[l][c]
+    number = ''
+    leap = 0
+    match sentido:
+        case 0:
+            while digit.isdigit() == True:
+                number = str(number) + str(digit)
+                c = c + 1
+                digit = mapa[l][c]
+                leap = leap + 1
+        case 1:
+            while digit.isdigit() == True:
+                number = str(number) + str(digit)
+                l = l + 1
+                digit = mapa[l][c]
+                leap = leap + 1
+        case 2:
+            while digit.isdigit() == True:
+                number = str(number) + str(digit)
+                c = c - 1
+                digit = mapa[l][c]
+                leap = leap + 1
+        case 3:
+            while digit.isdigit() == True:
+                number = str(number) + str(digit)
+                l = l - 1
+                digit = mapa[l][c]
+                leap = leap + 1
+    retorno = [number,leap]
+    return retorno
+
+## Função que acha o início do mapa
+def achaInicio(mapa, col):
+    for i in range(2,col):
+        if mapa[i][0] == '-':
+            print("Acha inicio i:" +str(i))
+            return i
 
 ## Função para exibir o menu e processar a escolha do usuário
 def menu():
     opcoes = {
+        "0": "caso0.txt",
         "1": "casoG50.txt",
         "2": "casoG100.txt",
         "3": "casoG200.txt",
@@ -35,6 +88,7 @@ def menu():
     print("Siga o dinheiro! (>_<)")
     print("========================================")
     print("       > Casos disponíveis: <3")
+    print("    0. Caso 0")
     print("    1. Caso G50    |   5. Caso G750")
     print("    2. Caso G100   |   6. Caso G1000")
     print("    3. Caso G200   |   7. Caso G1500")
@@ -46,9 +100,79 @@ def menu():
     # Verifica se a escolha do usuário é válida
     if escolha in opcoes:
         nome_arquivo = opcoes[escolha]
-        leitor(nome_arquivo)  # Chama a função leitor com o nome do arquivo escolhido
+        mapa = leitor(nome_arquivo)  # Chama a função leitor com o nome do arquivo escolhido
     else:
         print("Escolha inválida!")
+    return mapa
 
 # Inicia o programa
-menu()
+mapa = menu()
+stringMapa= "".join(str(element) for element in mapa[0])
+tams = stringMapa.split(" ")
+quantCol = int(tams[0])
+quantLinha = int(tams[1])
+sentido = 0
+co = 0
+lin = achaInicio(mapa, quantLinha)
+char = ''
+total = 0
+while char != '#':
+    match sentido:
+        case 0: # Direita
+            for i in range(co+1, quantCol):
+                print("Indo para a direita: " + str(mapa[lin][i]))
+                if mapa[lin][i] == '/' or mapa[lin][i] == '\\':
+                    sentido = direc(mapa[lin][i], sentido)
+                    co = i
+                    break
+                elif mapa[lin][i] == '#':
+                    char = '#'
+                    break
+                elif mapa[lin][i].isdigit():
+                    resultado = montante(sentido,lin,i,mapa)
+                    result = resultado[0]
+                    total = total + int(result)
+                    i = i + resultado[1]
+        case 1: # Baixo
+            for i in range(lin+1, quantLinha):
+                print("Indo para baixo: " + str(mapa[i][co]))
+                if mapa[i][co] == '/' or mapa[i][co] == '\\':
+                    sentido = direc(mapa[i][co], sentido)
+                    lin = i
+                    break
+                elif mapa[i][co] == '#':
+                    char = '#'
+                    break
+                elif mapa[i][co].isdigit():
+                    resultado = montante(sentido,i,co,mapa)
+                    total = total + int(resultado[0])
+                    i = i + resultado[1]
+        case 2: # Esquerda
+            for i in range(co-1, 0, -1):
+                print("Indo para a esquerda: " + str(mapa[lin][i]))
+                if mapa[lin][i] == '/' or mapa[lin][i] == '\\':
+                    sentido = direc(mapa[lin][i],sentido)
+                    co = i
+                    break
+                elif mapa[lin][i] == '#':
+                    char = '#'
+                    break
+                elif mapa[lin][i].isdigit():
+                    resultado = montante(sentido,lin,i,mapa)
+                    total = total + int(resultado[0])
+                    i = i - resultado[1]
+        case 3: # Cima
+            for i in range(lin-1, 0, -1):
+                print("Indo para cima: " + str(mapa[i][co]))
+                if mapa[i][co] == '/' or mapa[i][co] == '\\':
+                    sentido = direc(mapa[i][co],sentido)
+                    lin = i
+                    break
+                elif mapa[i][co] == '#':
+                    char = '#'
+                    break
+                elif mapa[i][co].isdigit():
+                    resultado = montante(sentido,i,co,mapa)
+                    total = total + int(resultado[0])
+                    i = i - resultado[1]
+print("Montante final: " + str(total))
