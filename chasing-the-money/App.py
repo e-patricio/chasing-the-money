@@ -64,6 +64,70 @@ def montante(sentido, l, c, mapa):
     retorno = [number,leap]
     return retorno
 
+##Função com toda a lógica de funcionamento do programa
+def funcionamento(mapa):
+    start = process_time()
+    stringMapa= "".join(str(element) for element in mapa[0])
+    tams = stringMapa.split(" ")
+    quantCol = int(tams[0])
+    quantLinha = int(tams[1])
+    sentido = 0
+    co = 0
+    lin = achaInicio(mapa, quantLinha)
+    char = ''
+    total = 0
+    while char != '#':
+        match sentido:
+            case 0: # Direita
+                co = co + 1
+                ##print("Indo para a direita: " + str(mapa[lin][co]))
+                if mapa[lin][co] == '/' or mapa[lin][co] == '\\':
+                    sentido = direc(mapa[lin][co], sentido)
+                elif mapa[lin][co] == '#':
+                    char = '#'
+                elif mapa[lin][co].isdigit():
+                    resultado = montante(sentido,lin,co,mapa)
+                    result = resultado[0]
+                    total = total + int(result)
+                    co = co + resultado[1]
+            case 1: # Baixo
+                lin = lin + 1
+                ##print("Indo para baixo: " + str(mapa[lin][co]))
+                if mapa[lin][co] == '/' or mapa[lin][co] == '\\':
+                    sentido = direc(mapa[lin][co], sentido)
+                elif mapa[lin][co] == '#':
+                    char = '#'
+                elif mapa[lin][co].isdigit():
+                    resultado = montante(sentido,lin,co,mapa)
+                    total = total + int(resultado[0])
+                    lin = lin + resultado[1]
+            case 2: # Esquerda
+                co = co-1
+                ##print("Indo para a esquerda: " + str(mapa[lin][co]))
+                if mapa[lin][co] == '/' or mapa[lin][co] == '\\':
+                    sentido = direc(mapa[lin][co],sentido)
+                elif mapa[lin][co] == '#':
+                    char = '#'
+                elif mapa[lin][co].isdigit():
+                    resultado = montante(sentido,lin,co,mapa)
+                    total = total + int(resultado[0])                    
+                    co = co - resultado[1]
+            case 3: # Cima
+                lin = lin - 1
+                ##print("Indo para cima: " + str(mapa[lin][co]))
+                if mapa[lin][co] == '/' or mapa[lin][co] == '\\':
+                    sentido = direc(mapa[lin][co],sentido)
+                elif mapa[lin][co] == '#':
+                    char = '#'
+                elif mapa[lin][co].isdigit():
+                    resultado = montante(sentido,lin,co,mapa)
+                    total = total + int(resultado[0])
+                    lin = lin - resultado[1]
+    print("Montante final: " + str(total))
+    end = process_time()
+    t = end-start
+    print(str(t)+"s")
+
 ## Função que acha o início do mapa
 def achaInicio(mapa, col):
     for i in range(2,col):
@@ -74,7 +138,6 @@ def achaInicio(mapa, col):
 ## Função para exibir o menu e processar a escolha do usuário
 def menu():
     opcoes = {
-        "0": "caso0.txt",
         "1": "casoG50.txt",
         "2": "casoG100.txt",
         "3": "casoG200.txt",
@@ -83,6 +146,7 @@ def menu():
         "6": "casoG1000.txt",
         "7": "casoG1500.txt",
         "8": "casoG2000.txt",
+        "9": "Sair",
     }
 
     print("Siga o dinheiro! (>_<)")
@@ -98,72 +162,15 @@ def menu():
 
     # Verifica se a escolha do usuário é válida
     if escolha in opcoes:
-        nome_arquivo = opcoes[escolha]
-        mapa = leitor(nome_arquivo)  # Chama a função leitor com o nome do arquivo escolhido
+        if opcoes[escolha] == opcoes["9"]:
+            print("Tchau")
+        else:
+            nome_arquivo = opcoes[escolha]
+            mapa = leitor(nome_arquivo)  # Chama a função leitor com o nome do arquivo escolhido
+            funcionamento(mapa)
+            menu()
     else:
         print("Escolha inválida!")
-    return mapa
 
 # Inicia o programa
-start = process_time()
-mapa = menu()
-stringMapa= "".join(str(element) for element in mapa[0])
-tams = stringMapa.split(" ")
-quantCol = int(tams[0])
-quantLinha = int(tams[1])
-sentido = 0
-co = 0
-lin = achaInicio(mapa, quantLinha)
-char = ''
-total = 0
-while char != '#':
-    match sentido:
-        case 0: # Direita
-            co = co + 1
-            ##print("Indo para a direita: " + str(mapa[lin][co]))
-            if mapa[lin][co] == '/' or mapa[lin][co] == '\\':
-                sentido = direc(mapa[lin][co], sentido)
-            elif mapa[lin][co] == '#':
-                char = '#'
-            elif mapa[lin][co].isdigit():
-                resultado = montante(sentido,lin,co,mapa)
-                result = resultado[0]
-                total = total + int(result)
-                co = co + resultado[1]
-        case 1: # Baixo
-            lin = lin + 1
-            ##print("Indo para baixo: " + str(mapa[lin][co]))
-            if mapa[lin][co] == '/' or mapa[lin][co] == '\\':
-                sentido = direc(mapa[lin][co], sentido)
-            elif mapa[lin][co] == '#':
-                char = '#'
-            elif mapa[lin][co].isdigit():
-                resultado = montante(sentido,lin,co,mapa)
-                total = total + int(resultado[0])
-                lin = lin + resultado[1]
-        case 2: # Esquerda
-            co = co-1
-            ##print("Indo para a esquerda: " + str(mapa[lin][co]))
-            if mapa[lin][co] == '/' or mapa[lin][co] == '\\':
-                sentido = direc(mapa[lin][co],sentido)
-            elif mapa[lin][co] == '#':
-                char = '#'
-            elif mapa[lin][co].isdigit():
-                resultado = montante(sentido,lin,co,mapa)
-                total = total + int(resultado[0])                    
-                co = co - resultado[1]
-        case 3: # Cima
-            lin = lin - 1
-            ##print("Indo para cima: " + str(mapa[lin][co]))
-            if mapa[lin][co] == '/' or mapa[lin][co] == '\\':
-                sentido = direc(mapa[lin][co],sentido)
-            elif mapa[lin][co] == '#':
-                char = '#'
-            elif mapa[lin][co].isdigit():
-                resultado = montante(sentido,lin,co,mapa)
-                total = total + int(resultado[0])
-                lin = lin - resultado[1]
-print("Montante final: " + str(total))
-end = process_time()
-t = end-start
-print(str(t)+"s")
+menu()
