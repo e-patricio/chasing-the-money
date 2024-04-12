@@ -130,7 +130,7 @@ def funcionamento(mapa):
 
 ## Função que acha o início do mapa
 def achaInicio(mapa, col):
-    for i in range(2,col):
+    for i in range(2,col +2):
         if mapa[i][0] == '-':
             print("Acha inicio i:" +str(i))
             return i
@@ -171,6 +171,7 @@ def menu():
             menu()
     else:
         print("Escolha inválida!")
+        menu()
 
 # Inicia o programa
 menu()
