@@ -36,27 +36,27 @@ def direc(char, sentido):
 def montante(sentido, l, c, mapa):
     digit = mapa[l][c]
     number = ''
-    leap = -1 # Quantidade de casas que terá que ser pulada no mapa depois do número ser montado para não ser lido novamente
+    leap = -1 # Quantidade de casas que terão que ser puladas no mapa depois do número ser montado para não ser lido novamente
     match sentido:
-        case 0:
+        case 0: # Direita
             while digit.isdigit():
                 number = str(number) + str(digit)
                 c = c + 1
                 digit = mapa[l][c]
                 leap = leap + 1
-        case 1:
+        case 1: # Baixo
             while digit.isdigit():
                 number = str(number) + str(digit)
                 l = l + 1
                 digit = mapa[l][c]
                 leap = leap + 1
-        case 2:
+        case 2: # Esquerda
             while digit.isdigit():
                 number = str(number) + str(digit)
                 c = c - 1
                 digit = mapa[l][c]
                 leap = leap + 1
-        case 3:
+        case 3: # Cima
             while digit.isdigit():
                 number = str(number) + str(digit)
                 l = l - 1
@@ -72,6 +72,7 @@ def achaInicio(mapa, col):
             # print("Início:" +str(i))
             return i
 
+## Função que percorre cada caractere e chama os métodos auxiliares necessários
 def funcionamento(mapa):
     start = process_time()
     stringMapa= "".join(str(element) for element in mapa[0])
@@ -82,8 +83,10 @@ def funcionamento(mapa):
     co = 0
     lin = achaInicio(mapa, quantLinha)
     char = ''
+    countChar = 1
     total = 0
     while char != '#':
+        countChar = countChar + 1
         match sentido:
             case 0: # Direita
                 co = co+1
@@ -96,6 +99,7 @@ def funcionamento(mapa):
                     result = resultado[0]
                     total = total + int(result)
                     co = co + resultado[1]
+                    countChar = countChar + resultado[1]
             case 1: # Baixo
                 lin = lin+1
                 if mapa[lin][co] == '/' or mapa[lin][co] == '\\':
@@ -106,6 +110,7 @@ def funcionamento(mapa):
                     resultado = montante(sentido, lin, co, mapa)
                     total = total + int(resultado[0])
                     lin = lin + resultado[1]
+                    countChar = countChar + resultado[1]
             case 2: # Esquerda
                 co = co-1
                 if mapa[lin][co] == '/' or mapa[lin][co] == '\\':
@@ -116,6 +121,7 @@ def funcionamento(mapa):
                     resultado = montante(sentido, lin, co, mapa)
                     total = total + int(resultado[0])                    
                     co = co - resultado[1]
+                    countChar = countChar + resultado[1]
             case 3: # Cima
                 lin = lin - 1
                 if mapa[lin][co] == '/' or mapa[lin][co] == '\\':
@@ -126,10 +132,12 @@ def funcionamento(mapa):
                     resultado = montante(sentido, lin, co, mapa)
                     total = total + int(resultado[0])
                     lin = lin - resultado[1]
+                    countChar = countChar + resultado[1]
     print("Dinheiro recolhido: " + str(total))
     end = process_time()
     t = end-start
     print("Tempo de execução: " + str(t)+"s")
+    print("Total de caracteres: " + str(countChar))
 
 ## Função para exibir o menu e processar a escolha do usuário
 def menu():
