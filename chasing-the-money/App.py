@@ -19,15 +19,15 @@ def leitor(nome_arquivo):
 def direc(char, sentido):
     if char == '/':
         if sentido == 0:    # Se estiver indo para a direta, vai para cima 
-            return 3
+            return 3           
         elif sentido == 1:  # Se estiver indo para baixo, vai para a esquerda
-            return 2
+            return 2        
         elif sentido == 2:  # Se estiver indo para a esquerda, vai para baixo
-            return 1
+            return 1        
         else:               # Se estiver indo para cima, vai para a direita
-            return 0
+            return 0        
     else: # '\'
-        if sentido == 0 or sentido == 2:   
+        if sentido == 0 or sentido == 2: 
             return sentido + 1  # Vai para o próximo sentido na lista (direita => baixo, esquerda => cima)
         else:
             return sentido - 1  # Vai para o sentido anterior na lista (baixo => direita, cima => esquerda)
@@ -36,27 +36,27 @@ def direc(char, sentido):
 def montante(sentido, l, c, mapa):
     digit = mapa[l][c]
     number = ''
-    leap = -1 # Quantidade de casas que terá que ser pulada no mapa depois do número ser montado para não ser lido novamente
+    leap = -1  # Quantidade de casas que terão que ser puladas no mapa depois do número ser montado para não ser lido novamente
     match sentido:
-        case 0:
+        case 0: # Direita
             while digit.isdigit():
                 number = str(number) + str(digit)
                 c = c + 1
                 digit = mapa[l][c]
                 leap = leap + 1
-        case 1:
+        case 1: # Baixo
             while digit.isdigit():
                 number = str(number) + str(digit)
                 l = l + 1
                 digit = mapa[l][c]
                 leap = leap + 1
-        case 2:
+        case 2: # Esquerda
             while digit.isdigit():
                 number = str(number) + str(digit)
                 c = c - 1
                 digit = mapa[l][c]
                 leap = leap + 1
-        case 3:
+        case 3: # Cima
             while digit.isdigit():
                 number = str(number) + str(digit)
                 l = l - 1
@@ -67,12 +67,13 @@ def montante(sentido, l, c, mapa):
 
 ## Função que acha o início do mapa
 def achaInicio(mapa, col):
-    for i in range(2,col +2):
+    for i in range(2, col+2):
         if mapa[i][0] == '-':
             # print("Início:" +str(i))
             return i
 
-def funcionamento(mapa):
+## Função que percorre cada caractere e chama os métodos auxiliares necessários
+def funcionamento(mapa):  
     start = process_time()
     stringMapa= "".join(str(element) for element in mapa[0])
     tams = stringMapa.split(" ")
@@ -82,54 +83,85 @@ def funcionamento(mapa):
     co = 0
     lin = achaInicio(mapa, quantLinha)
     char = ''
+    countChar = 1
     total = 0
     while char != '#':
+        countChar = countChar + 1
         match sentido:
             case 0: # Direita
-                co = co+1
-                if mapa[lin][co] == '/' or mapa[lin][co] == '\\':
-                    sentido = direc(mapa[lin][co], sentido)
-                elif mapa[lin][co] == '#':
-                    char = '#'
-                elif mapa[lin][co].isdigit():
-                    resultado = montante(sentido, lin, co, mapa)
-                    result = resultado[0]
-                    total = total + int(result)
-                    co = co + resultado[1]
+                i = co+1
+                while i <= quantCol:
+                    if mapa[lin][i] == '/' or mapa[lin][i] == '\\':
+                        sentido = direc(mapa[lin][i], sentido)
+                        co = i
+                        break
+                    elif mapa[lin][i] == '#':
+                        char = '#'
+                        break
+                    elif mapa[lin][i].isdigit():
+                        resultado = montante(sentido, lin, i, mapa)
+                        result = resultado[0]
+                        total = total + int(result)
+                        i = i + resultado[1]
+                        countChar = countChar + resultado[1]
+                    i = i + 1
+                    countChar = countChar + 1
             case 1: # Baixo
-                lin = lin+1
-                if mapa[lin][co] == '/' or mapa[lin][co] == '\\':
-                    sentido = direc(mapa[lin][co], sentido)
-                elif mapa[lin][co] == '#':
-                    char = '#'
-                elif mapa[lin][co].isdigit():
-                    resultado = montante(sentido, lin, co, mapa)
-                    total = total + int(resultado[0])
-                    lin = lin + resultado[1]
+                i = lin+1
+                while i <= quantLinha:
+                    if mapa[i][co] == '/' or mapa[i][co] == '\\':
+                        sentido = direc(mapa[i][co], sentido)
+                        lin = i
+                        break
+                    elif mapa[i][co] == '#':
+                        char = '#'
+                        break
+                    elif mapa[i][co].isdigit():
+                        resultado = montante(sentido, i, co, mapa)
+                        total = total + int(resultado[0])
+                        i = i + resultado[1]
+                        countChar = countChar + resultado[1]
+                    i = i + 1
+                    countChar = countChar + 1
             case 2: # Esquerda
-                co = co-1
-                if mapa[lin][co] == '/' or mapa[lin][co] == '\\':
-                    sentido = direc(mapa[lin][co], sentido)
-                elif mapa[lin][co] == '#':
-                    char = '#'
-                elif mapa[lin][co].isdigit():
-                    resultado = montante(sentido, lin, co, mapa)
-                    total = total + int(resultado[0])                    
-                    co = co - resultado[1]
+                i = co-1
+                while i >= 0 :
+                    if mapa[lin][i] == '/' or mapa[lin][i] == '\\':
+                        sentido = direc(mapa[lin][i],sentido)
+                        co = i
+                        break
+                    elif mapa[lin][i] == '#':
+                        char = '#'
+                        break
+                    elif mapa[lin][i].isdigit():
+                        resultado = montante(sentido, lin, i, mapa)
+                        total = total + int(resultado[0])                    
+                        i = i - resultado[1]
+                        countChar = countChar + resultado[1]
+                    i= i - 1
+                    countChar = countChar + 1
             case 3: # Cima
-                lin = lin - 1
-                if mapa[lin][co] == '/' or mapa[lin][co] == '\\':
-                    sentido = direc(mapa[lin][co], sentido)
-                elif mapa[lin][co] == '#':
-                    char = '#'
-                elif mapa[lin][co].isdigit():
-                    resultado = montante(sentido, lin, co, mapa)
-                    total = total + int(resultado[0])
-                    lin = lin - resultado[1]
+                i = lin - 1
+                while i > 0:
+                    if mapa[i][co] == '/' or mapa[i][co] == '\\':
+                        sentido = direc(mapa[i][co],sentido)
+                        lin = i
+                        break
+                    elif mapa[i][co] == '#':
+                        char = '#'
+                        break
+                    elif mapa[i][co].isdigit():
+                        resultado = montante(sentido, i, co, mapa)
+                        total = total + int(resultado[0])
+                        i = i - resultado[1]
+                        countChar = countChar + resultado[1]
+                    i = i - 1 
+                    countChar = countChar + 1       
     print("Dinheiro recolhido: " + str(total))
     end = process_time()
     t = end-start
     print("Tempo de execução: " + str(t)+"s")
+    print("Total de caracteres: " + str(countChar))
 
 ## Função para exibir o menu e processar a escolha do usuário
 def menu():
@@ -142,7 +174,7 @@ def menu():
         "6": "casoG1000.txt",
         "7": "casoG1500.txt",
         "8": "casoG2000.txt",
-        "9": "Sair",
+        "9": "sair",
     }
 
     print("Siga o dinheiro! (>_<)")
@@ -152,6 +184,7 @@ def menu():
     print("    2. Caso G100   |   6. Caso G1000")
     print("    3. Caso G200   |   7. Caso G1500")
     print("    4. Caso G500   |   8. Caso G2000")
+    print("    9. Sair")
 
     escolha = input("Digite o número do caso desejado: ")
     print("========================================")
